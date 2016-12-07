@@ -312,42 +312,6 @@
   </entry>
   
   <entry>
-    <title>es6学习环境搭建</title>
-    <link href="http://frontendzzf.com/2016/11/12/es6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
-    <id>http://frontendzzf.com/2016/11/12/es6学习环境搭建/</id>
-    <published>2016-11-12T09:40:44.000Z</published>
-    <updated>2016-11-30T04:37:22.117Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="e6学习系列"><a href="#e6学习系列" class="headerlink" title="e6学习系列"></a>e6学习系列</h3><h4 id="第二节-学习es6环境搭建"><a href="#第二节-学习es6环境搭建" class="headerlink" title="第二节 学习es6环境搭建"></a>第二节 学习es6环境搭建</h4><ol>
-<li><p>gulp 任务配置检测文件变化<br>gulpfile.js配置</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>),</div><div class="line">gulpLoadPlugins = <span class="built_in">require</span>(<span class="string">'gulp-load-plugins'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> plugins = gulpLoadPlugins();</div><div class="line"></div><div class="line">gulp.task(<span class="string">'babel'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">"src/**/*.js"</span>)</div><div class="line">		.pipe(plugins.babel())</div><div class="line">		.pipe(gulp.dest(<span class="string">"lib"</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, [<span class="string">'babel'</span>], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	gulp.watch(<span class="string">'src/**/*.js'</span>, [<span class="string">'babel'</span>]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>nodemon自动运行。<br>nodemon.json配置</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"> &#123;</div><div class="line">  <span class="string">"restartable"</span>: <span class="string">"rs"</span>,</div><div class="line">  <span class="string">"ignore"</span>: [</div><div class="line">    <span class="string">".git"</span>,</div><div class="line">    <span class="string">"node_modules/**/node_modules"</span></div><div class="line">  ],</div><div class="line">  <span class="string">"verbose"</span>: <span class="literal">true</span>,</div><div class="line">  <span class="string">"execMap"</span>: &#123;</div><div class="line">    <span class="string">"js"</span>: <span class="string">"node --harmony"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"events"</span>: &#123;</div><div class="line">    <span class="string">"restart"</span>: <span class="string">"osascript -e 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"watch"</span>: [</div><div class="line">    <span class="string">"lib/**/*.js"</span></div><div class="line">  ],</div><div class="line">  <span class="string">"env"</span>: &#123;</div><div class="line">    <span class="string">"NODE_ENV"</span>: <span class="string">"development"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"ext"</span>: <span class="string">"js json"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>运行代码，只需要<code>nodemon lib/lesson1.js</code></p>
-</li>
-<li><p>node.js对es6的支持情况93%，详情参考<a href="https://kangax.github.io/compat-table/es6/" target="_blank" rel="external">e6支持</a> .</p>
-</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      系属es6学习系列文章，本章节主要是es6学习环境的搭建，通过gulp watch监控文件变化，然后自动运行babel任务，nodemon重新运行文件。
-    
-    </summary>
-    
-      <category term="技术" scheme="http://frontendzzf.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="前端" scheme="http://frontendzzf.com/categories/%E6%8A%80%E6%9C%AF/%E5%89%8D%E7%AB%AF/"/>
-    
-    
-      <category term="es6" scheme="http://frontendzzf.com/tags/es6/"/>
-    
-  </entry>
-  
-  <entry>
     <title>第一节babel安装</title>
     <link href="http://frontendzzf.com/2016/11/12/%E7%AC%AC%E4%B8%80%E8%8A%82babel%E5%AE%89%E8%A3%85/"/>
     <id>http://frontendzzf.com/2016/11/12/第一节babel安装/</id>
@@ -393,6 +357,42 @@
     <summary type="html">
     
       系属es6学习系列文章，本章节主要简述了babel的安装与运行。
+    
+    </summary>
+    
+      <category term="技术" scheme="http://frontendzzf.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="前端" scheme="http://frontendzzf.com/categories/%E6%8A%80%E6%9C%AF/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="es6" scheme="http://frontendzzf.com/tags/es6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>es6学习环境搭建</title>
+    <link href="http://frontendzzf.com/2016/11/12/es6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    <id>http://frontendzzf.com/2016/11/12/es6学习环境搭建/</id>
+    <published>2016-11-12T09:40:44.000Z</published>
+    <updated>2016-11-30T04:37:22.117Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="e6学习系列"><a href="#e6学习系列" class="headerlink" title="e6学习系列"></a>e6学习系列</h3><h4 id="第二节-学习es6环境搭建"><a href="#第二节-学习es6环境搭建" class="headerlink" title="第二节 学习es6环境搭建"></a>第二节 学习es6环境搭建</h4><ol>
+<li><p>gulp 任务配置检测文件变化<br>gulpfile.js配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>),</div><div class="line">gulpLoadPlugins = <span class="built_in">require</span>(<span class="string">'gulp-load-plugins'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> plugins = gulpLoadPlugins();</div><div class="line"></div><div class="line">gulp.task(<span class="string">'babel'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> gulp.src(<span class="string">"src/**/*.js"</span>)</div><div class="line">		.pipe(plugins.babel())</div><div class="line">		.pipe(gulp.dest(<span class="string">"lib"</span>));</div><div class="line">&#125;);</div><div class="line"></div><div class="line">gulp.task(<span class="string">'watch'</span>, [<span class="string">'babel'</span>], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	gulp.watch(<span class="string">'src/**/*.js'</span>, [<span class="string">'babel'</span>]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>nodemon自动运行。<br>nodemon.json配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"> &#123;</div><div class="line">  <span class="string">"restartable"</span>: <span class="string">"rs"</span>,</div><div class="line">  <span class="string">"ignore"</span>: [</div><div class="line">    <span class="string">".git"</span>,</div><div class="line">    <span class="string">"node_modules/**/node_modules"</span></div><div class="line">  ],</div><div class="line">  <span class="string">"verbose"</span>: <span class="literal">true</span>,</div><div class="line">  <span class="string">"execMap"</span>: &#123;</div><div class="line">    <span class="string">"js"</span>: <span class="string">"node --harmony"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"events"</span>: &#123;</div><div class="line">    <span class="string">"restart"</span>: <span class="string">"osascript -e 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"watch"</span>: [</div><div class="line">    <span class="string">"lib/**/*.js"</span></div><div class="line">  ],</div><div class="line">  <span class="string">"env"</span>: &#123;</div><div class="line">    <span class="string">"NODE_ENV"</span>: <span class="string">"development"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"ext"</span>: <span class="string">"js json"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>运行代码，只需要<code>nodemon lib/lesson1.js</code></p>
+</li>
+<li><p>node.js对es6的支持情况93%，详情参考<a href="https://kangax.github.io/compat-table/es6/" target="_blank" rel="external">e6支持</a> .</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      系属es6学习系列文章，本章节主要是es6学习环境的搭建，通过gulp watch监控文件变化，然后自动运行babel任务，nodemon重新运行文件。
     
     </summary>
     
