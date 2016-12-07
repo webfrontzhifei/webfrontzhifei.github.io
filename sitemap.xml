@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://frontendzzf.com/2016/11/26/node%E6%A8%A1%E5%9D%97%E6%94%B6%E9%9B%86/</loc>
+    
+    <lastmod>2016-12-07T11:59:42.974Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://frontendzzf.com/2016/12/06/JS%E6%B5%8B%E8%AF%95/</loc>
     
-    <lastmod>2016-12-07T04:40:15.607Z</lastmod>
+    <lastmod>2016-12-07T11:16:27.515Z</lastmod>
     
   </url>
   
@@ -33,13 +40,6 @@
     <loc>http://frontendzzf.com/2016/12/01/electron%E5%85%A5%E9%97%A8/</loc>
     
     <lastmod>2016-12-01T12:55:34.474Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://frontendzzf.com/2016/11/26/node%E6%A8%A1%E5%9D%97%E6%94%B6%E9%9B%86/</loc>
-    
-    <lastmod>2016-11-30T04:53:05.108Z</lastmod>
     
   </url>
   

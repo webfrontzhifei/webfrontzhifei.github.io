@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frontendzzf.com/"/>
-  <updated>2016-12-07T04:40:15.607Z</updated>
+  <updated>2016-12-07T11:16:27.515Z</updated>
   <id>http://frontendzzf.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://frontendzzf.com/2016/12/06/JS%E6%B5%8B%E8%AF%95/"/>
     <id>http://frontendzzf.com/2016/12/06/JS测试/</id>
     <published>2016-12-06T12:04:58.000Z</published>
-    <updated>2016-12-07T04:40:15.607Z</updated>
+    <updated>2016-12-07T11:16:27.515Z</updated>
     
     <content type="html"><![CDATA[<h3 id="断言库"><a href="#断言库" class="headerlink" title="断言库"></a>断言库</h3><p>  &nbsp;&nbsp;&nbsp;&nbsp;要学习JS测试，首先要学习的就是断言assert。Node.js提供了assert 模块api，但是功能有限。</p>
 <ol>
@@ -28,12 +28,68 @@
 <h4 id="assertion-style"><a href="#assertion-style" class="headerlink" title="assertion style"></a>assertion style</h4><ol>
 <li><p>assert<br> assert与其他两种的区别是，不能链式调用。它与nodejs的内置<a href="https://nodejs.org/dist/latest-v7.x/docs/api/assert.html" target="_blank" rel="external">assert</a>接口相似，只是增添了一些功能。<br> <a href="http://chaijs.com/api/assert/" target="_blank" rel="external">assert api</a><br> 注意，</p>
  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">assert(<span class="string">'foo'</span> ==<span class="string">'bar'</span>, <span class="string">'foo is not equal bar'</span>);</div></pre></td></tr></table></figure>
-<p> 运行结果：<br> <img src="./assertionError1.png" alt=""><br><a href="http://chaijs.com/api/bdd/" target="_blank" rel="external">chai API文档</a><br><a href="https://github.com/chaijs/chai" target="_blank" rel="external">github chai</a></p>
+<p> 运行结果：<br> <img src="./assertionError1.png" alt=""><br> assert没有返回值，如果assert不为true，就直接抛出assertionError</p>
+</li>
+<li><p>BDD style</p>
+<ul>
+<li><p>Expect<br><a href="http://chaijs.com/api/bdd/" target="_blank" rel="external">Expect/Should API</a><br>简介：<br>连接谓词：to,be,been,is,that,which,and,has,have,with,at,of,same;这些词设置语义化，没有实质上的作用。<br>demo：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> foo = <span class="string">'bar'</span>;</div><div class="line">expect(foo).to.that.a(<span class="string">'string'</span>);</div></pre></td></tr></table></figure>
+<p>与</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> foo = <span class="string">'bar'</span>;</div><div class="line">expect(foo).to.been.a(<span class="string">'string'</span>);</div></pre></td></tr></table></figure>
+<p>没有区别。</p>
+<ol>
+<li>.not跟在链式调用后的否定断言</li>
+<li>.deep为equal与property断言增加deep flag</li>
+<li>.any为key断言增加any flag</li>
+<li>.all位keys断言增加all flag</li>
+<li>.a(type)–别名.an,断言param的type</li>
+<li>.include(value)–别名.contain,断言array中的元素，String的substring，当用于object时，则转变为于.keys断言的contains flag</li>
+<li>.ok断言truthy</li>
+<li>.true断言true（与.ok的区别在于，.true只能为true，而.ok可以是Boolean(value)转换后的值，因此expect(true).to.be.true,而expect(1).to.be.true或抛出AssertionError</li>
+<li>.false断言false，与.true相对</li>
+<li>.null断言null</li>
+<li>.undefined断言undefined</li>
+<li>.NaN断言NaN</li>
+<li>.exist断言（除null与undefined之外）</li>
+<li>.empty断言（string的length，array的length为0，object的enumberable keys的length为0）</li>
+<li>.arguments断言为函数参数</li>
+<li><p>.equal(value)对比是否严格相等，当添加了deep标记，就只比较值是否相等。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">expect(&#123; foo: <span class="string">'bar'</span> &#125;).to.not.equal(&#123; foo: <span class="string">'bar'</span> &#125;);</div><div class="line">expect(&#123; foo: <span class="string">'bar'</span> &#125;).to.deep.equal(&#123; foo: <span class="string">'bar'</span> &#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>.eql(value)等价于.deep.equal(value)</p>
+</li>
+<li>.above(value)用于直接比较number类型大小以及配合.length.above(value)使用</li>
+<li>.least(value)great than equal</li>
+<li>.below(value)less than</li>
+<li>.most(value) less than equal</li>
+<li>.within(start, finish) number大小在start-finish内，以及配合.length.within(start, finish)使用<br>……</li>
+</ol>
+</li>
+<li><p>Should<br>Should与expect使用同一套接口，API相同，用法略有不同。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> expect = <span class="built_in">require</span>(<span class="string">'chai'</span>).expect;</div><div class="line"><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'chai'</span>).should();</div><div class="line"><span class="keyword">var</span> foo = <span class="string">'bar'</span>;</div><div class="line">expect(foo).to.be.a(<span class="string">'string'</span>);</div><div class="line">foo.should.be.a(<span class="string">'string'</span>);</div></pre></td></tr></table></figure>
+<p>另外：should因为是继承自object.prototype,因此如果为null或者undefined情况下，foo.should将会报错。这种情况下，通过以下方式：</p>
+<ul>
+<li>should.exist</li>
+<li>should.not.exist</li>
+<li>should.equal</li>
+<li>should.not.equal</li>
+<li>should.Throw</li>
+<li>should.not.Throw</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'chai'</span>).should();</div><div class="line">db.get(<span class="number">1234</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, doc</span>) </span>&#123;</div><div class="line">    should.not.exist(err);</div><div class="line">    should.exist(doc);</div><div class="line">    doc.should.be.an(<span class="string">'object'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+</ul>
 </li>
 </ol>
 </li>
+<li><p>mocha框架（此章节参考了阮一峰的测试框架Mocha实例教程）<br><a href="http://mochajs.org/" target="_blank" rel="external">mocha 官网</a><br><a href="http://www.cnblogs.com/Leo_wl/p/5734889.html" target="_blank" rel="external">测试框架mochajs详解</a><br><a href="http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html" target="_blank" rel="external">测试框架 Mocha 实例教程</a><br>google搜索了n久，遗憾的是没有mocha的标准文档说明describe，it的用法。这里，暂时以阮老师的文档中为参考。<br> <a href="http://chaijs.com/api/bdd/" target="_blank" rel="external">chai API文档</a><br> <a href="https://github.com/chaijs/chai" target="_blank" rel="external">github chai</a><br> 简易demo</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// add.js</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x, y</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> x + y;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = add;</div></pre></td></tr></table></figure>
+<p> 测试脚本要与被测试的源码脚本同名，上文中add.js对应的文件为add.test.js或者add.spec.js（表示规格）</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> add = <span class="built_in">require</span>(<span class="string">'./add.js'</span>);</div><div class="line"><span class="keyword">var</span> expect = <span class="built_in">require</span>(<span class="string">'chai'</span>).expect;</div><div class="line"></div><div class="line">describe(<span class="string">'加法函数的测试'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  it(<span class="string">'1 加 1 应该等于 2'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    expect(add(<span class="number">1</span>, <span class="number">1</span>)).to.be.equal(<span class="number">2</span>);</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p> 测试脚本，可以独立执行，它包含一个或者多个describe块，每个describe块应该包括一个或者多个it块。<br> describe块称为“测试套件”（test suite），表示一组相关的测试集合。两个参数，第一个参数是suite的描述，第二个是实际执行的函数。<br> it块称为“测试用例”（test case），表示一个单独的测试，是测试的最小单位，两个参数，第一个参数为测试用例的名称，第二个参数为实际执行的函数。<br> mocha命令运行：<br> <img src="./mocha1.png" alt=""><br> 习惯一般将测试脚本放在test目录下，而mocha命令默认会运行test目录下的所有测试文件。也就是，不指定路径，直接运行mocha命令，macha会去test下寻找文件。<br> 例如，文件结构如下，<br> <img src="./mocha2.png" alt=""><br> 直接运行mocha命令，结果<br> <img src="./mocha3.png" alt=""><br> 从结果中可以看到，只运行了test下的文件，而子目录dir下的文件并没有运行。<br> 通过给mocha命令添加参数recursive，可以改变这一行为。<br> <img src="./mocha4.png" alt=""><br> 其他内容参考阮一峰的10个demo，并运行一遍，即可掌握。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://wiki.jikexueyuan.com/project/node-lessons/mocha-should-istanbul.html" target="_blank" rel="external">测试用例：mocha，should，istanbul</a><br><a href="http://www.imooc.com/article/2631" target="_blank" rel="external">单元测试工具Mocha和SuperTest</a><br><a href="http://www.shaynegui.com/javascript-unit-test-chaijs/" target="_blank" rel="external">js单元测试断言框架chaijs</a> </p>
+</li>
 </ol>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>  <a href="http://wiki.jikexueyuan.com/project/node-lessons/mocha-should-istanbul.html" target="_blank" rel="external">测试用例：mocha，should，istanbul</a><br>  <a href="http://www.imooc.com/article/2631" target="_blank" rel="external">单元测试工具Mocha和SuperTest</a><br>  <a href="http://www.shaynegui.com/javascript-unit-test-chaijs/" target="_blank" rel="external">js单元测试断言框架chaijs</a></p>
 ]]></content>
     
     <summary type="html">
@@ -219,7 +275,7 @@
     <link href="http://frontendzzf.com/2016/11/26/node%E6%A8%A1%E5%9D%97%E6%94%B6%E9%9B%86/"/>
     <id>http://frontendzzf.com/2016/11/26/node模块收集/</id>
     <published>2016-11-26T06:48:58.000Z</published>
-    <updated>2016-11-30T04:53:05.108Z</updated>
+    <updated>2016-12-07T11:59:42.974Z</updated>
     
     <content type="html"><![CDATA[<h2 id="模块收集-列表顺序随机"><a href="#模块收集-列表顺序随机" class="headerlink" title="模块收集(列表顺序随机)"></a>模块收集(列表顺序随机)</h2><ul>
 <li>解析命令行参数<a href="https://www.npmjs.com/package/commander" target="_blank" rel="external">commander</a></li>
@@ -232,7 +288,9 @@
 <li>使用系统程序打开指定文件或网址<a href="https://www.npmjs.com/package/open" target="_blank" rel="external">open</a></li>
 <li>解析、格式化日期时间<a href="https://www.npmjs.com/package/moment" target="_blank" rel="external">moment</a></li>
 <li>nodejs抓取页面，封装了jQuery<a href="https://www.npmjs.com/package/cheerio" target="_blank" rel="external">cheerio</a></li>
-<li>网络请求模块<a href="https://www.npmjs.com/package/request" target="_blank" rel="external">request</a><h3 id="异步相关"><a href="#异步相关" class="headerlink" title="异步相关"></a>异步相关</h3></li>
+<li>网络请求模块<a href="https://www.npmjs.com/package/request" target="_blank" rel="external">request</a></li>
+<li>网络请求<a href="https://www.npmjs.com/package/superagent" target="_blank" rel="external">superagent</a></li>
+<li>ajax请求<a href="https://www.npmjs.com/package/node-fetch" target="_blank" rel="external">node-fetch</a><h3 id="异步相关"><a href="#异步相关" class="headerlink" title="异步相关"></a>异步相关</h3></li>
 <li>promise实现模块<a href="https://www.npmjs.com/package/bluebird" target="_blank" rel="external">bluebird</a></li>
 <li>异步控制<a href="https://www.npmjs.com/package/async" target="_blank" rel="external">async</a><h3 id="gulp中间件"><a href="#gulp中间件" class="headerlink" title="gulp中间件"></a>gulp中间件</h3><h3 id="grunt中间件"><a href="#grunt中间件" class="headerlink" title="grunt中间件"></a>grunt中间件</h3></li>
 </ul>
