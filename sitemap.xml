@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://frontendzzf.com/2016/11/29/co%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</loc>
+    <loc>http://frontendzzf.com/tags/index.html</loc>
     
-    <lastmod>2017-06-10T17:12:03.845Z</lastmod>
+    <lastmod>2017-06-10T19:07:50.961Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://frontendzzf.com/categories/index.html</loc>
     
-    <lastmod>2017-06-10T17:02:45.480Z</lastmod>
+    <lastmod>2017-06-10T19:07:11.234Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://frontendzzf.com/2016/11/29/co%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</loc>
+    
+    <lastmod>2017-06-10T17:12:03.845Z</lastmod>
     
   </url>
   
@@ -103,13 +110,6 @@
     <loc>http://frontendzzf.com/2016/11/12/es6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
     
     <lastmod>2016-11-30T04:37:22.117Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://frontendzzf.com/tags/index.html</loc>
-    
-    <lastmod>2016-09-21T07:12:35.705Z</lastmod>
     
   </url>
   
