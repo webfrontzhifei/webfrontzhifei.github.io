@@ -1,0 +1,1261 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Vue," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端匠心" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近在项目boss后台管理系统中，开始使用vue框架，通过实践发现，Vue框架的简洁。作为一次技能上的提升，决定深入vue源码分析。由于比较好奇vue的发展历史，此次源码分析将会作为一个长时间的vue分析系列，以commit为维度。后续也会将vue在boss项目中的架构进行分享。本文系属于Vue系列文章。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue源码学习系列一">
+<meta property="og:url" content="http://frontendzzf.com/2017/02/18/vue源码学习系列一/index.html">
+<meta property="og:site_name" content="前端匠心">
+<meta property="og:description" content="最近在项目boss后台管理系统中，开始使用vue框架，通过实践发现，Vue框架的简洁。作为一次技能上的提升，决定深入vue源码分析。由于比较好奇vue的发展历史，此次源码分析将会作为一个长时间的vue分析系列，以commit为维度。后续也会将vue在boss项目中的架构进行分享。本文系属于Vue系列文章。">
+<meta property="og:image" content="http://frontendzzf.com/./1.png">
+<meta property="og:image" content="http://frontendzzf.com/./2.png">
+<meta property="og:updated_time" content="2017-02-21T16:40:29.694Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue源码学习系列一">
+<meta name="twitter:description" content="最近在项目boss后台管理系统中，开始使用vue框架，通过实践发现，Vue框架的简洁。作为一次技能上的提升，决定深入vue源码分析。由于比较好奇vue的发展历史，此次源码分析将会作为一个长时间的vue分析系列，以commit为维度。后续也会将vue在boss项目中的架构进行分享。本文系属于Vue系列文章。">
+<meta name="twitter:image" content="http://frontendzzf.com/./1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://frontendzzf.com/2017/02/18/vue源码学习系列一/"/>
+
+
+
+
+
+     <title> vue源码学习系列一 | 前端匠心 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d55f682d384c736d9b618cbafc2bbb16";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <a href="https://github.com/sunshine940326"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端匠心</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heart"></i> <br />
+            
+            留言板
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photo">
+          <a href="/photo" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-image"></i> <br />
+            
+            照片
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://frontendzzf.com/2017/02/18/vue源码学习系列一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="webfrontzhifei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端匠心">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                vue源码学习系列一
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-18T16:46:49+08:00">
+                2017-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/前端/集成方案/" itemprop="url" rel="index">
+                    <span itemprop="name">集成方案</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/02/18/vue源码学习系列一/" class="leancloud_visitors" data-flag-title="vue源码学习系列一">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+               
+                     <span class="post-meta-item-icon">
+                       <i class="fa fa-edit"></i>
+                     </span>
+                 
+                     <span class="post-meta-item-text">字数统计</span>
+                       
+                     <span title="字数统计" }}">
+                       1,117 字
+                     </span>
+                  
+                 
+                  <span class="post-meta-divider">|</span>
+                 
+                 
+                 <span class="post-meta-item-icon">
+                     <i class="fa fa-clock-o"></i>
+                     </span>
+                 
+                      <span class="post-meta-item-text">阅读时长</span>
+                 
+                   <span title="阅读时长" }}">
+                 5 分钟
+                 </span>
+               
+            </div>
+          
+          
+              <div class="post-description">
+                  最近在项目boss后台管理系统中，开始使用vue框架，通过实践发现，Vue框架的简洁。作为一次技能上的提升，决定深入vue源码分析。由于比较好奇vue的发展历史，此次源码分析将会作为一个长时间的vue分析系列，以commit为维度。后续也会将vue在boss项目中的架构进行分享。本文系属于Vue系列文章。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-init-commit-83fac01"><a href="#1-init-commit-83fac01" class="headerlink" title="1.init commit 83fac01"></a>1.init commit 83fac01</h3><p>  简单分析：项目grunt 集成方案，使用componentJs框架。</p>
+<p>  注意：此处componentJs使用的版本为0.16.3,也就是需要执行npm install -g component@0.16.3.</p>
+<p>  另外简单介绍component.js，只需要执行component install,然后运行component build命令即可，具体可参考<a href="https://github.com/componentjs/component" target="_blank" rel="external">github</a>,当然该项目使用了grunt-component-build，可以直接运行 grunt component_build。</p>
+<h3 id="2-rename-871ed91"><a href="#2-rename-871ed91" class="headerlink" title="2.rename 871ed91"></a>2.rename 871ed91</h3><p>  项目rename了生成的文件为seed.js,添加了文件夹exporations。该文件夹下有两个文件，分别为getset.html与getset-revits-style.html。</p>
+<p>  其中，getset.html内容如下：<br>  <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">&lt;body&gt;</div><div class="line">	&lt;div id="test"&gt;</div><div class="line">	  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;/p&gt;</div><div class="line">	  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;/p&gt;</div><div class="line">	  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;/p&gt;</div><div class="line">	  &lt;p&gt;&#123;&#123;what&#125;&#125;&lt;/p&gt;</div><div class="line">	  &lt;p&gt;&#123;&#123;hey&#125;&#125;&lt;/p&gt;</div><div class="line">	&lt;/div&gt;</div><div class="line">	&lt;script&gt;</div><div class="line">	  var bindingMark = 'data-element-binding'</div><div class="line">	  function Element (id, initData) &#123;</div><div class="line"></div><div class="line">		var self	 = this</div><div class="line">		el 		 = self.el = document.getElementById(id)</div><div class="line">		bindings = &#123;&#125; // the internal copy</div><div class="line">		data 	 = self.data = &#123;&#125; // the external interface</div><div class="line">		content  = el.innerHTML.replace(/\&#123;\&#123;(.*)\&#125;\&#125;/g, markToken)</div><div class="line"></div><div class="line"></div><div class="line">		el.innerHTML = content</div><div class="line">			</div><div class="line">		for (var variable in bindings) &#123;</div><div class="line">			bind(variable)</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		if (initData) &#123;</div><div class="line">			for (var variable in initData) &#123;</div><div class="line">				data[variable] = initData[variable]</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		function markToken (match, variable) &#123;</div><div class="line">			bindings[variable] = &#123;&#125;</div><div class="line">			return '&lt;span ' + bindingMark + '="' + variable +'"&gt;&lt;/span&gt;'</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		function bind (variable) &#123;</div><div class="line">			bindings[variable].els = el.querySelectorAll('[' + bindingMark + '="' + variable + '"]')</div><div class="line">			;[].forEach.call(bindings[variable].els, function (e) &#123;</div><div class="line">			   e.removeAttribute(bindingMark)</div><div class="line">			&#125;)</div><div class="line">			Object.defineProperty(data, variable, &#123;</div><div class="line">				set: function (newVal) &#123;</div><div class="line">					[].forEach.call(bindings[variable].els, function (e) &#123;</div><div class="line">						  bindings[variable].value = e.textContent = newVal</div><div class="line">					&#125;)</div><div class="line">				&#125;,</div><div class="line">				get: function () &#123;</div><div class="line">					return bindings[variable].value</div><div class="line">				&#125;</div><div class="line">			&#125;)</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">			</div><div class="line">	var app = new Element('test', &#123;</div><div class="line">		msg: 'hello'</div><div class="line">	&#125;)</div><div class="line"></div><div class="line">	 &lt;/script&gt;</div><div class="line">	&lt;/body&gt;</div></pre></td></tr></table></figure></p>
+<p>  上面script中定义的Element方法就是简单的render方法，通过选取元素，然后使用replace方法将initData中的数据替换选中的元素。</p>
+<h3 id="3-native-implementation-commit-a5e27b1"><a href="#3-native-implementation-commit-a5e27b1" class="headerlink" title="3.native implementation commit a5e27b1"></a>3.native implementation commit a5e27b1</h3><p>  1.src目录下有3个文件一次为filter，directive，main。其中，filter.js定义了简单的首字符大写capitalize过滤器。<br>    <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    capitalize: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</div><div class="line">        value = value.toString()</div><div class="line">        <span class="keyword">return</span> value.charAt(<span class="number">0</span>).toUpperCase() + value.slice(<span class="number">1</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<pre><code>directive定义了&apos;sd-text&apos;,&apos;sd-show&apos;,&apos;sd-class&apos;,&apos;sd-on&apos;指令。
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">module.exports = &#123;</div><div class="line">    text: function (el, value) &#123;</div><div class="line">        el.textContent = value || ''</div><div class="line">    &#125;,</div><div class="line">    show: function (el, value) &#123;</div><div class="line">        el.style.display = value ? '' : 'none'</div><div class="line">    &#125;,</div><div class="line">    class: function (el, value, classname) &#123;</div><div class="line">        el.classList[value ? 'add' : 'remove'](classname)</div><div class="line">    &#125;,</div><div class="line">    on: &#123;</div><div class="line">        update: function (el, handler, event, directive) &#123;</div><div class="line">            if (!directive.handlers) &#123;</div><div class="line">                directive.handlers = &#123;&#125;</div><div class="line">            &#125;</div><div class="line">            var handlers = directive.handlers</div><div class="line">            if (handlers[event]) &#123;</div><div class="line">                el.removeEventListener(event, handlers[event])</div><div class="line">            &#125;</div><div class="line">            if (handler) &#123;</div><div class="line">                handler = handler.bind(el)</div><div class="line">                el.addEventListener(event, handler)</div><div class="line">                handlers[event] = handler</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        unbind: function (el, event, directive) &#123;</div><div class="line">            if (directive.handlers) &#123;</div><div class="line">                el.removeEventListener(event, directive.handlers[event])</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        customFilter: function (handler, selectors) &#123;</div><div class="line">            return function (e) &#123;</div><div class="line">                var match = selectors.every(function (selector) &#123;</div><div class="line">                    return e.target.webkitMatchesSelector(selector)</div><div class="line">                &#125;)</div><div class="line">                if (match) handler.apply(this, arguments)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+main.js文件是核心文件，定义了Seed构造器，以及相关的辅助函数。
+</code></pre>   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> prefix      = <span class="string">'sd'</span>,</div><div class="line">    Filters     = <span class="built_in">require</span>(<span class="string">'./filters'</span>),</div><div class="line">    Directives  = <span class="built_in">require</span>(<span class="string">'./directives'</span>),</div><div class="line">    selector    = <span class="built_in">Object</span>.keys(Directives).map(<span class="function"><span class="keyword">function</span> (<span class="params">d</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">'['</span> + prefix + <span class="string">'-'</span> + d + <span class="string">']'</span></div><div class="line">    &#125;).join()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Seed</span> (<span class="params">opts</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>,</div><div class="line">        root = <span class="keyword">this</span>.el = <span class="built_in">document</span>.getElementById(opts.id),</div><div class="line">        els  = root.querySelectorAll(selector),</div><div class="line">        bindings = &#123;&#125; <span class="comment">// internal real data</span></div><div class="line">        </div><div class="line">    self.scope = &#123;&#125; <span class="comment">// external interface</span></div><div class="line"></div><div class="line">    <span class="comment">// process nodes for directives</span></div><div class="line">    ;[].forEach.call(els, processNode)</div><div class="line">    processNode(root)</div><div class="line"></div><div class="line">    <span class="comment">// initialize all variables by invoking setters</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> bindings) &#123;</div><div class="line">        self.scope[key] = opts.scope[key]</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">processNode</span> (<span class="params">el</span>) </span>&#123;</div><div class="line">        cloneAttributes(el.attributes).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">attr</span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> directive = parseDirective(attr)</div><div class="line">            <span class="keyword">if</span> (directive) &#123;</div><div class="line">                bindDirective(self, el, bindings, directive)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>   通过分析Seed构造函数，原理是通过遍历目标元素的子元素中含有[‘sd-text’][‘sd-show’][‘sd-on’][‘sd-class’]属性的元素。通过processNode方法，对选中的每个子元素上，首先将sd属性转化为对应的directive指令，然后在目标元素上添加el子元素的对应的directive。并且在bindAccessors中为seed目标元素定义对应scope的key属性的set，get方法，这里其实是核心。当初始化时，调用了该方法。<br>   在dev.html中，使用了seed.js进行了测试。<br>   <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;div id="test" sd-on-click="changeMessage | .button"&gt;</div><div class="line">            &lt;p sd-text="msg | capitalize"&gt;&lt;/p&gt;</div><div class="line">            &lt;p sd-show="something"&gt;YOYOYO&lt;/p&gt;</div><div class="line">            &lt;p class="button" sd-text="msg"&gt;&lt;/p&gt;</div><div class="line">            &lt;p sd-class-red="error" sd-text="hello"&gt;&lt;/p&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">		&lt;script&gt;</div><div class="line">			var Seed = require('seed')</div><div class="line">			var app = Seed.create(&#123;</div><div class="line">			    id: 'test',</div><div class="line">			    // template</div><div class="line">			    scope: &#123;</div><div class="line">			        msg: 'hello',</div><div class="line">			        hello: 'WHWHWHW',</div><div class="line">			        something: 'zzzz',</div><div class="line">			        changeMessage: function () &#123;</div><div class="line">			            app.scope.msg = 'hola'</div><div class="line">			        &#125;</div><div class="line">			    &#125;</div><div class="line">			&#125;)</div><div class="line">		&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>   可以通过调试，很容易的分析Seed.js的运行过程。很明显的看到，这里有很多处不足的地方，首先，Seed.js选中的根元素只能是通过id选择，其次，选择子元素中具有sd相关属性，也有不足，例如，只有sd-on-click，将不能被root.querySeletorAll([‘sd-on’]),匹配到，但是，这里已经可以有了雏形。</p>
+<h3 id="4-filer-value-should-not-be-written-commit-3eb7f6f"><a href="#4-filer-value-should-not-be-written-commit-3eb7f6f" class="headerlink" title="4.filer value should not be written commit 3eb7f6f"></a>4.filer value should not be written commit 3eb7f6f</h3><p>   这次commit主要修复了一个问题，filterValue显示，但是并不更改binding的value值。主要为在bindAccessor方法中，如下改变：<br>   <img src="./1.png" alt=""><br>  同时，在directives中添加了repeat指令，但是并没有具体实现。在main.js的Seed构造器中，为Seed原型添加了dump方法以及生命周期的destory方法，进行销毁对象。</p>
+<p> 在dev.html测试中，测试了app的destory。</p>
+<h3 id="5-dump-destory-fix-filters-commit-ec39439"><a href="#5-dump-destory-fix-filters-commit-ec39439" class="headerlink" title="5.dump,destory,fix filters commit ec39439"></a>5.dump,destory,fix filters commit ec39439</h3><p> 主要在main.js修复了if判断，改为了三元式。<br> <img src="./2.png" alt=""><br> 另外在filters中添加了uppercase过滤器，并在dev.html进行了验证。</p>
+<h3 id="6-refactor项目重构-commit-cf1732b"><a href="#6-refactor项目重构-commit-cf1732b" class="headerlink" title="6.refactor项目重构 commit cf1732b"></a>6.refactor项目重构 commit cf1732b</h3><p> 将directive单独提取出来，并且将main.js中的Seed.js进行了重构，filter.js主要增加了delegate委托过滤器。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat.png" alt="webfrontzhifei WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.png" alt="webfrontzhifei Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/06/JS测试/" rel="next" title="JS测试">
+                <i class="fa fa-chevron-left"></i> JS测试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/27/morgan-中间件/" rel="prev" title="morgan-中间件">
+                morgan-中间件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="webfrontzhifei" />
+          <p class="site-author-name" itemprop="name">webfrontzhifei</p>
+           
+              <p class="site-description motion-element" itemprop="description">真正的匠者，一定在某个领域做到虚心、恒心、细心，才能完成真正意义上的创新，这种创新是浴火后的新生，是锤炼后的淬火，更是一种水到渠成的洒脱心态。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/webfrontzhifei" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-init-commit-83fac01"><span class="nav-number">1.</span> <span class="nav-text">1.init commit 83fac01</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-rename-871ed91"><span class="nav-number">2.</span> <span class="nav-text">2.rename 871ed91</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-native-implementation-commit-a5e27b1"><span class="nav-number">3.</span> <span class="nav-text">3.native implementation commit a5e27b1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-filer-value-should-not-be-written-commit-3eb7f6f"><span class="nav-number">4.</span> <span class="nav-text">4.filer value should not be written commit 3eb7f6f</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-dump-destory-fix-filters-commit-ec39439"><span class="nav-number">5.</span> <span class="nav-text">5.dump,destory,fix filters commit ec39439</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-refactor项目重构-commit-cf1732b"><span class="nav-number">6.</span> <span class="nav-text">6.refactor项目重构 commit cf1732b</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+      <div id="music163player">
+          <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=86 src="//music.163.com/outchain/player?type=2&id=38358214&auto=0&height=66">
+          </iframe>
+      </div>
+    </div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">webfrontzhifei</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <div id="uyan_frame"></div>
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2136163"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("SXu3fAQtWilv2Jtsr5eHvgCH-gzGzoHsz", "R79G2KT1xhiu9Ngp3Dnjsn7k");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+
+  <div class="bg_content">
+      <div class="landscape"></div>
+      <div class="filter"></div>
+      <canvas id="canvas"></canvas>
+  </div>
+  <script>
+    //360站长平台
+
+    (function(){
+       var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?940223423bbed5ceb474bec1058bc6fb":"https://jspassport.ssl.qhimg.com/11.0.1.js?940223423bbed5ceb474bec1058bc6fb";
+       document.write('<script src="' + src + '" id="sozz"><\/script>');
+    })();
+
+     //百度站长
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https'){
+       bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else{
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+
+    function Star(id, x, y){
+      this.id = id;
+      this.x = x;
+      this.y = y;
+      this.r = Math.floor(Math.random()*2)+1;
+      var alpha = (Math.floor(Math.random()*10)+1)/10/2;
+      this.color = "rgba(255,255,255,"+alpha+")";
+    }
+
+    Star.prototype.draw = function() {
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = this.r * 2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    Star.prototype.move = function() {
+      this.y -= .15;
+      if (this.y <= -10) this.y = HEIGHT + 10;
+      this.draw();
+    }
+
+    Star.prototype.die = function() {
+        stars[this.id] = null;
+        delete stars[this.id];
+    }
+
+
+    function Dot(id, x, y, r) {
+      this.id = id;
+      this.x = x;
+      this.y = y;
+      this.r = Math.floor(Math.random()*5)+1;
+      this.maxLinks = 2;
+      this.speed = .5;
+      this.a = .5;
+      this.aReduction = .005;
+      this.color = "rgba(255,255,255,"+this.a+")";
+      this.linkColor = "rgba(255,255,255,"+this.a/4+")";
+
+      this.dir = Math.floor(Math.random()*140)+200;
+    }
+
+    Dot.prototype.draw = function() {
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = this.r * 2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    Dot.prototype.link = function() {
+      if (this.id == 0) return;
+      var previousDot1 = getPreviousDot(this.id, 1);
+      var previousDot2 = getPreviousDot(this.id, 2);
+      var previousDot3 = getPreviousDot(this.id, 3);
+      if (!previousDot1) return;
+      ctx.strokeStyle = this.linkColor;
+      ctx.moveTo(previousDot1.x, previousDot1.y);
+      ctx.beginPath();
+      ctx.lineTo(this.x, this.y);
+      if (previousDot2 != false) ctx.lineTo(previousDot2.x, previousDot2.y);
+      if (previousDot3 != false) ctx.lineTo(previousDot3.x, previousDot3.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    function getPreviousDot(id, stepback) {
+      if (id == 0 || id - stepback < 0) return false;
+      if (typeof dots[id - stepback] != "undefined") return dots[id - stepback];
+      else return false;//getPreviousDot(id - stepback);
+    }
+
+    Dot.prototype.move = function() {
+      this.a -= this.aReduction;
+      if (this.a <= 0) {
+        this.die();
+        return
+      }
+      this.color = "rgba(255,255,255,"+this.a+")";
+      this.linkColor = "rgba(255,255,255,"+this.a/4+")";
+      this.x = this.x + Math.cos(degToRad(this.dir))*this.speed,
+      this.y = this.y + Math.sin(degToRad(this.dir))*this.speed;
+
+      this.draw();
+      this.link();
+    }
+
+    Dot.prototype.die = function() {
+        dots[this.id] = null;
+        delete dots[this.id];
+    }
+
+
+    var canvas  = document.getElementById('canvas'),
+      ctx = canvas.getContext('2d'),
+      WIDTH,
+      HEIGHT,
+      mouseMoving = false,
+      mouseMoveChecker,
+      mouseX,
+      mouseY,
+      stars = [],
+      initStarsPopulation = 80,
+      dots = [],
+      dotsMinDist = 2,
+      maxDistFromCursor = 50;
+
+    setCanvasSize();
+    init();
+
+    function setCanvasSize() {
+      WIDTH = document.documentElement.clientWidth,
+        HEIGHT = document.documentElement.clientHeight;
+
+      canvas.setAttribute("width", WIDTH);
+      canvas.setAttribute("height", HEIGHT);
+    }
+
+    function init() {
+      ctx.strokeStyle = "white";
+      ctx.shadowColor = "white";
+      for (var i = 0; i < initStarsPopulation; i++) {
+        stars[i] = new Star(i, Math.floor(Math.random()*WIDTH), Math.floor(Math.random()*HEIGHT));
+        //stars[i].draw();
+      }
+      ctx.shadowBlur = 0;
+      animate();
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        for (var i in stars) {
+          stars[i].move();
+        }
+        for (var i in dots) {
+          dots[i].move();
+        }
+        drawIfMouseMoving();
+        requestAnimationFrame(animate);
+    }
+
+    window.onmousemove = function(e){
+      mouseMoving = true;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      clearInterval(mouseMoveChecker);
+      mouseMoveChecker = setTimeout(function() {
+        mouseMoving = false;
+      }, 100);
+    }
+
+
+    function drawIfMouseMoving(){
+      if (!mouseMoving) return;
+
+      if (dots.length == 0) {
+        dots[0] = new Dot(0, mouseX, mouseY);
+        dots[0].draw();
+        return;
+      }
+
+      var previousDot = getPreviousDot(dots.length, 1);
+      var prevX = previousDot.x;
+      var prevY = previousDot.y;
+
+      var diffX = Math.abs(prevX - mouseX);
+      var diffY = Math.abs(prevY - mouseY);
+
+      if (diffX < dotsMinDist || diffY < dotsMinDist) return;
+
+      var xVariation = Math.random() > .5 ? -1 : 1;
+      xVariation = xVariation*Math.floor(Math.random()*maxDistFromCursor)+1;
+      var yVariation = Math.random() > .5 ? -1 : 1;
+      yVariation = yVariation*Math.floor(Math.random()*maxDistFromCursor)+1;
+      dots[dots.length] = new Dot(dots.length, mouseX+xVariation, mouseY+yVariation);
+      dots[dots.length-1].draw();
+      dots[dots.length-1].link();
+    }
+    //setInterval(drawIfMouseMoving, 17);
+
+    function degToRad(deg) {
+      return deg * (Math.PI / 180);
+    }
+    </script>
+</body>
+</html>
